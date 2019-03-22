@@ -8,13 +8,19 @@
 
 import UIKit
 
-class ViewController: UIViewController {
-
+class SearchVC: UIViewController {
+    
+    @IBOutlet private weak var textField: UITextField?
+    @IBOutlet private weak var textView: UITextView?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
     }
 
-
+    @IBAction func startSearch(_ sender: Any) {
+    }
+    
+    
 }
 

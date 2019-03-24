@@ -19,6 +19,13 @@ class SearchVC: UIViewController {
     }
 
     @IBAction func startSearch(_ sender: Any) {
+        if let searchTerm = textField?.text {
+            FlickrSearch().searchFlickr(for: searchTerm, success: { (result) in
+                
+            }) { (error) in
+                
+            }
+        }
     }
     
     

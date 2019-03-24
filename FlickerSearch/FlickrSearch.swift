@@ -17,6 +17,7 @@ struct FlickrSearchResult {
 enum FlickrSearchError: Error {
     case wrongQuery
     case serverError
+    case apiMismatch
 }
 
 struct FlickrSearch {
@@ -54,8 +55,21 @@ struct FlickrSearch {
             }
             
             do {
-                let jsonDictionary = try JSONSerialization.jsonObject(with: data)
-                dump(jsonDictionary)
+                guard
+                let jsonDictionary = try JSONSerialization.jsonObject(with: data) as? [String: AnyObject],
+                let photosContainer = jsonDictionary["photos"] as? [String: AnyObject],
+                let photos = photosContainer["photo"] as? [[String: AnyObject]] else {
+                    error(FlickrSearchError.apiMismatch)
+                    return
+                }
+                
+                guard let jsonFlickrPhotoMetadata = photos.first else {
+                    error(FlickrSearchError.apiMismatch)
+                    return
+                }
+                
+                let flickrPhoto = FlickrPhoto(from: jsonFlickrPhotoMetadata)
+                
             } catch let innerError {
                 error(innerError)
             }

@@ -68,7 +68,17 @@ struct FlickrSearch {
                     return
                 }
                 
-                let flickrPhoto = FlickrPhoto(from: jsonFlickrPhotoMetadata)
+                guard let flickrPhoto = FlickrPhoto(from: jsonFlickrPhotoMetadata) else {
+                    error(FlickrSearchError.apiMismatch)
+                    return
+                }
+                
+                guard let flickrImage = flickrPhoto.getImage() else {
+                    error(FlickrSearchError.serverError)
+                    return
+                }
+                
+                dump(flickrImage)
                 
             } catch let innerError {
                 error(innerError)

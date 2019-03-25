@@ -11,7 +11,7 @@ import UIKit
 
 struct FlickrSearchResult {
     let searchTerm : String
-    let searchResult : [UIImage]
+    let searchResult : UIImage
 }
 
 enum FlickrSearchError: Error {
@@ -33,7 +33,7 @@ struct FlickrSearch {
     ///   - searchTerm: the term to search for
     ///   - success: called when the flickr backend returns images, may be called on a background thread
     ///   - error: called when the flickr search fails, may be called on a background thread
-    func searchFlickr(for searchTerm: String, success: @escaping (FlickrSearchResult) -> Void, error: @escaping(Error) -> Void) {
+    func searchFlickr(for searchTerm: String, success: @escaping (FlickrSearchResult) -> Void, error: @escaping(FlickrSearchError) -> Void) {
         
         guard let searchUrl = FlickrSearch.url(for: searchTerm) else {
             error(FlickrSearchError.wrongQuery)
@@ -44,8 +44,8 @@ struct FlickrSearch {
         
         let urlSession = URLSession.shared.dataTask(with: urlRequest) { (data, urlResponse, innerError) in
             
-            if let innerError = innerError {
-                error(innerError)
+            if let _ = innerError {
+                error(FlickrSearchError.serverError)
                 return
             }
             
@@ -78,10 +78,10 @@ struct FlickrSearch {
                     return
                 }
                 
-                dump(flickrImage)
+                success(FlickrSearchResult(searchTerm: searchTerm, searchResult: flickrImage))
                 
             } catch let innerError {
-                error(innerError)
+                error(FlickrSearchError.serverError)
             }
             
         }

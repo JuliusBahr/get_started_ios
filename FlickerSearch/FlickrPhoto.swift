@@ -54,7 +54,7 @@ struct FlickrPhoto {
         }
     }
     
-    private func imageUrl(_ size: String = "m") -> URL? {
+    private func imageUrl(_ size: String = "b") -> URL? {
         if let url =  URL(string: "https://farm\(serverFarm).staticflickr.com/\(server)/\(photoId)_\(secret)_\(size).jpg") {
             return url
         }
